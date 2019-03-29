@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Tiny Agent Model Tool",
   "main": "src/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "watch": "jest --watch",
+    "build": "rm -rf dist && tsc -d --outDir dist"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,11 @@
   "bugs": {
     "url": "https://github.com/unadlib/acting/issues"
   },
-  "homepage": "https://github.com/unadlib/acting#readme"
+  "homepage": "https://github.com/unadlib/acting#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "jest": "^24.5.0",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.4000"
+  }
 }
