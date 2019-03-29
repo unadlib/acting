@@ -23,6 +23,10 @@
   "bugs": {
     "url": "https://github.com/unadlib/acting/issues"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
   "homepage": "https://github.com/unadlib/acting#readme",
   "devDependencies": {
     "@types/jest": "^24.0.11",
