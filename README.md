@@ -24,6 +24,11 @@ const acting = new Acting({
     groups: {
       _self: ['DELETE'],
       role: ['PUT'],
+    },
+    users: {
+      _with: {
+        books: ['GET'],
+      }
     }
   }
 });
@@ -32,6 +37,7 @@ await acting.admin.get('?a=1');
 await acting.admin.post('', { foo: 'bar'});
 await acting.groups.delete('?b=1', 'testbody');
 await acting.groups.role.put();
+await acting.users(10).books.get();
 ```
 
 console.log results:
@@ -40,6 +46,7 @@ console.log results:
 { path: '/admin', method: 'POST' } { foo: 'bar' }
 { path: '/groups?b=1', method: 'DELETE' } 'testbody'
 { path: '/groups/role', method: 'PUT' }
+{ path: '/users/10/books', method: 'GET' }
 ```
 
 ### Options
@@ -47,6 +54,8 @@ console.log results:
 - `root`: string
 - `domains`: object
 - `fetch`: function
+- `selfKey`: string(defalt: `_self`)
+- `withKey`: string(default: `_with`)
 
 
 

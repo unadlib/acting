@@ -41,7 +41,9 @@ export default class Model {
   }
 
   _getPath(subDomain: string = '', postfix: string = ''): string {
-    return `${this._root}/${subDomain}${postfix}`;
+    const isSelfKey = subDomain === this._selfKey;
+    const substring = isSelfKey ? '' : `/${subDomain}`;
+    return `${this._root}${substring}${postfix}`;
   }
   
   _getMethods(subDomain: string, methods: string[]): Properties<Fn> {
@@ -57,20 +59,28 @@ export default class Model {
 
   _generateSubDomain(subDomain: string, subConfig: SubConfig) {
     if (Array.isArray(subConfig)) {
-      this[subDomain] = this._getMethods(subDomain, subConfig);
+      const methods = this._getMethods(subDomain, subConfig);
+      if (subDomain === this._selfKey) {
+        Object.assign(this, methods);
+      } else {
+        this[subDomain] = methods;
+      }
     }
     if (Array.isArray(subConfig[this._selfKey])) {
-      this[subDomain] = this._getMethods(subDomain, subConfig[this._selfKey]);
+      const methods = this._getMethods(subDomain, subConfig[this._selfKey]);
+      if (subDomain === this._withKey) {
+        Object.assign(this, methods);
+      } else {
+        this[subDomain] = methods;
+      }
     }
     if (Array.isArray(subConfig[this._withKey])) {
-      this[subDomain] = this[subDomain] || {};
-      this[subDomain][this._withKey.replace(/^_/, '')] = id => {
+      this[subDomain] = id => {
         return this._getMethods(`${subDomain}/${id}`, subConfig[this._withKey])
       };
     }
     if ((<any>Object).prototype.toString.call(subConfig[this._withKey]) === '[object Object]') {
-      this[subDomain] = this[subDomain] || {};
-      this[subDomain][this._withKey.replace(/^_/, '')] = id => new Model({
+      this[subDomain] = id => new Model({
         root: `${this._getPath(subDomain)}/${id}`,
         fetch: this._fetch,
         domains: subConfig[this._withKey],
@@ -79,14 +89,12 @@ export default class Model {
       });
     }
     if ((<any>Object).prototype.toString.call(subConfig) === '[object Object]') {
-      this[subDomain] = {
-        ...this[subDomain],
-        ...new Model({
-          root: this._getPath(subDomain),
-          fetch: this._fetch,
-          domains: subConfig,
-        }),
-      };
+      this[subDomain] = this[subDomain] || {};
+      Object.assign(this[subDomain], new Model({
+        root: this._getPath(subDomain),
+        fetch: this._fetch,
+        domains: subConfig,
+      }));
     }
   }
 }
