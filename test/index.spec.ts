@@ -6,10 +6,22 @@ test('simple object', async () => {
     fetch: (...args) => args,
     domains: {
       admin: ['GET', 'POST'],
+      users: {
+        _with: ['GET']
+      },
+      roles: {
+        _with: {
+          groups: ['POST']
+        }
+      }
     }
   });
   expect(await (model as any).admin.post('/foo', 'bar'))
     .toEqual([{"method": "POST", "path": "/admin/foo"}, "bar"]);
+  expect(await (model as any).users.with(42).get('/foo', 'bar'))
+    .toEqual([{"method": "GET", "path": "/users/42/foo"}, "bar"]);
+  expect(await (model as any).roles.with(33).groups.post('/foo', 'bar'))
+    .toEqual([{"method": "POST", "path": "/roles/33/groups/foo"}, "bar"]);
 });
 
 test('deep object', async () => {
