@@ -17,14 +17,14 @@ test('simple object', async () => {
       }
     }
   });
-  expect(await (model as any).admin.post('/foo', 'bar'))
-    .toEqual([{"method": "POST", "path": "/admin/foo"}, "bar"]);
-  expect(await (model as any).users(42).get('/foo', 'bar'))
-    .toEqual([{"method": "GET", "path": "/users/42/foo"}, "bar"]);
-  expect(await (model as any).roles(33).groups.post('/foo', 'bar'))
-    .toEqual([{"method": "POST", "path": "/roles/33/groups/foo"}, "bar"]);
-  expect(await (model as any).roles(86).get('/foo', 'bar'))
-    .toEqual([{"method": "GET", "path": "/roles/86/foo"}, "bar"]);
+  expect(await (model as any).admin.post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/admin"}, "bar"]);
+  expect(await (model as any).users(42).get({ params: { a: 1, b: 'string' }, body: 'bar' }))
+    .toEqual([{"method": "GET", "path": "/users/42?a=1&b=string"}, "bar"]);
+  expect(await (model as any).roles(33).groups.post({ params: { a: 1, b: ['string', 'true'] }, body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/roles/33/groups?a=1&b=string&b=true"}, "bar"]);
+  expect(await (model as any).roles(86).get({ body: 'bar' }))
+    .toEqual([{"method": "GET", "path": "/roles/86"}, "bar"]);
 });
 
 test('deep object', async () => {
@@ -41,14 +41,14 @@ test('deep object', async () => {
       },
     }
   });
-  expect(await (model as any).admin.post('/foo', 'bar'))
-    .toEqual([{"method": "POST", "path": "/test/admin/foo"}, "bar"]);
-  expect(await (model as any).admin.get('/foo', 'bar'))
-    .toEqual([{"method": "GET", "path": "/test/admin/foo"}, "bar"]);
-  expect(await (model as any).admin.users.get('?a=1'))
-    .toEqual([{"method": "GET", "path": "/test/admin/users?a=1"}]);
-  expect(await (model as any).admin.roles.groups.put('/check?a=1', 'testbody'))
-    .toEqual([{"method": "PUT", "path": "/test/admin/roles/groups/check?a=1"}, 'testbody']);
+  expect(await (model as any).admin.post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/test/admin"}, "bar"]);
+  expect(await (model as any).admin.get({ body: 'bar' }))
+    .toEqual([{"method": "GET", "path": "/test/admin"}, "bar"]);
+  expect(await (model as any).admin.users.get({ params: { a: 1 } }))
+    .toEqual([{"method": "GET", "path": "/test/admin/users?a=1"} ,undefined]);
+  expect(await (model as any).admin.roles.groups.put({ params: { a: 1 }, body: 'testbody' }))
+    .toEqual([{"method": "PUT", "path": "/test/admin/roles/groups?a=1"}, 'testbody']);
 });
 
 test('config', async () => {
@@ -66,8 +66,8 @@ test('config', async () => {
     selfKey: 'self',
     withKey: 'at'
   });
-  expect(await (model as any).admin.post('/foo', 'bar'))
-    .toEqual([{"method": "POST", "path": "/test/admin/foo"}, "bar"]);
-  expect(await (model as any).users(12).get('/foo', 'bar'))
-    .toEqual([{"method": "GET", "path": "/test/users/12/foo"}, "bar"]);
+  expect(await (model as any).admin.post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/test/admin"}, "bar"]);
+  expect(await (model as any).users(12).get({ body: 'bar' }))
+    .toEqual([{"method": "GET", "path": "/test/users/12"}, "bar"]);
 });

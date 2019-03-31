@@ -17,6 +17,10 @@ interface ModelOption {
 type SubConfig = string[] & Properties & {
   _self?: string[],
 }
+interface Option {
+  params?: object;
+  body?: object;
+}
 
 export default class Model {
   public _root: string;
@@ -45,13 +49,31 @@ export default class Model {
     const substring = isSelfKey ? '' : `/${subDomain}`;
     return `${this._root}${substring}${postfix}`;
   }
+
+  _getPostfix(params: object): string {
+    return Object.entries(params).reduce((postfix, [key, value]) => {
+      let _postfix = postfix ? `${postfix}&` : '?'; 
+      if (typeof value === 'string' || typeof value === 'number') {
+        return `${_postfix}${key}=${value}`;
+      }
+      if (Array.isArray(value)) {
+        const param = `${key}=${value.join(`&${key}=`)}`;
+        return `${_postfix}${param}`;
+      }
+      return postfix;
+    }, '');
+  }
   
   _getMethods(subDomain: string, methods: string[]): Properties<Fn> {
     return methods.reduce(
       (_subDomain, method) => (<any>Object).assign(_subDomain, {
-        [method.toLowerCase()]: async (postfix, ...args) => {
+        [method.toLowerCase()]: async (option: Option = {}, ...args) => {
+          if ((<any>Object).prototype.toString.call(option) !== '[object Object]') {
+            throw new Error(`${method} parameter must be an object type.`);
+          }
+          const postfix = this._getPostfix(option.params || {});
           const path = this._getPath(subDomain, postfix);
-          return await this._fetch({ path, method }, ...args);
+          return await this._fetch({ path, method }, option.body, ...args);
         }
       }),
     {});

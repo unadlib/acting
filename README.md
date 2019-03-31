@@ -33,9 +33,9 @@ const acting = new Acting({
   }
 });
 
-await acting.admin.get('?a=1');
-await acting.admin.post('', { foo: 'bar'});
-await acting.groups.delete('?b=1', 'testbody');
+await acting.admin.get({ params: { a: 1 } });
+await acting.admin.post({ body: { foo: 'bar'} });
+await acting.groups.delete({ params: { b: 1 }, body: 'testbody' });
 await acting.groups.role.put();
 await acting.users(10).books.get();
 ```
