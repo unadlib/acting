@@ -1,8 +1,8 @@
 {
   "name": "acting",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Tiny Agent Model Tool",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
