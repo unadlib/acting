@@ -45,8 +45,8 @@ export default class Model {
   }
 
   _getPath(subDomain: string = '', postfix: string = ''): string {
-    const isSelfKey = subDomain === this._selfKey;
-    const substring = isSelfKey ? '' : `/${subDomain}`;
+    const isInternalKey =  [this._selfKey, this._withKey].indexOf(subDomain) > -1;
+    const substring = isInternalKey ? '' : `/${subDomain}`;
     return `${this._root}${substring}${postfix}`;
   }
 

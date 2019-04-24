@@ -82,3 +82,42 @@ test('config', async () => {
     .toEqual([{"method": "POST", "path": "/test/goods"}, "bar"]);  
 });
 
+
+test('complex object', async () => {
+  const model = new Model({
+    root: '',
+    fetch: (...args) => args,
+    domains: {
+      app: {
+        persons: ['GET'],
+        posts: ['POST'],
+        files: ['POST'],
+        groups: {
+          _self: ['GET', 'POST'],
+          _with: {
+            _self: ['GET'],
+            'bulk-assign': ['POST'],
+            posts: {
+              _with: {
+                _self: ['GET'],
+                text: ['PUT']
+              }
+            }
+          },
+        },
+      },
+    }
+  });
+  expect(await (model as any).app.groups.post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/app/groups"}, "bar"]);
+  expect(await (model as any).app.groups.get({ params: { a:1 } }))
+    .toEqual([{"method": "GET", "path": "/app/groups?a=1"}, undefined]);
+  expect(await (model as any).app.groups(11).get({ params: { a:1 } }))
+    .toEqual([{"method": "GET", "path": "/app/groups/11?a=1"}, undefined]);
+  expect(await (model as any).app.groups(11)['bulk-assign'].post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/app/groups/11/bulk-assign"}, "bar"]);
+  expect(await (model as any).app.groups(11).posts(12).text.put({ body: 'bar' }))
+    .toEqual([{"method": "PUT", "path": "/app/groups/11/posts/12/text"}, "bar"]);
+  expect(await (model as any).app.groups(11).posts(12).get({ params: { a:1 } }))
+    .toEqual([{"method": "GET", "path": "/app/groups/11/posts/12?a=1"}, undefined]);  
+});
