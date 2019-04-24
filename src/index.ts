@@ -116,6 +116,8 @@ export default class Model {
         root: this._getPath(subDomain),
         fetch: this._fetch,
         domains: subConfig,
+        selfKey: this._selfKey,
+        withKey: this._withKey,
       }));
     }
   }

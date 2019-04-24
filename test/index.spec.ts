@@ -62,6 +62,12 @@ test('config', async () => {
       users: {
         at: ['GET', 'POST'],
       },
+      goods: {
+        self: ['GET', 'POST'],
+        at: {
+          detail: ['GET', 'POST'],
+        },
+      },
     },
     selfKey: 'self',
     withKey: 'at'
@@ -70,4 +76,9 @@ test('config', async () => {
     .toEqual([{"method": "POST", "path": "/test/admin"}, "bar"]);
   expect(await (model as any).users(12).get({ body: 'bar' }))
     .toEqual([{"method": "GET", "path": "/test/users/12"}, "bar"]);
+  expect(await (model as any).goods(12).detail.get({ body: 'bar' }))
+    .toEqual([{"method": "GET", "path": "/test/goods/12/detail"}, "bar"]);
+  expect(await (model as any).goods.post({ body: 'bar' }))
+    .toEqual([{"method": "POST", "path": "/test/goods"}, "bar"]);  
 });
+
