@@ -7,11 +7,11 @@ test('simple object', async () => {
     domains: {
       admin: ['GET', 'POST'],
       users: {
-        _with: ['GET']
+        param: ['GET']
       },
       roles: {
-        _with: {
-          _self: ['GET'],
+        param: {
+          method: ['GET'],
           groups: ['POST']
         }
       }
@@ -33,7 +33,7 @@ test('deep object', async () => {
     fetch: (...args) => args,
     domains: {
       admin: {
-        _self: ['GET', 'POST'],
+        method: ['GET', 'POST'],
         users: ['GET', 'POST', 'DELETE'],
         roles: {
           groups: ['PATCH', 'DELETE', 'PUT'],
@@ -93,13 +93,13 @@ test('complex object', async () => {
         posts: ['POST'],
         files: ['POST'],
         groups: {
-          _self: ['GET', 'POST'],
-          _with: {
-            _self: ['GET'],
+          method: ['GET', 'POST'],
+          param: {
+            method: ['GET'],
             'bulk-assign': ['POST'],
             posts: {
-              _with: {
-                _self: ['GET'],
+              param: {
+                method: ['GET'],
                 text: ['PUT']
               }
             }

@@ -32,8 +32,8 @@ export default class Model {
     root = ``,
     fetch,
     domains = {},
-    selfKey = '_self',
-    withKey = '_with',
+    selfKey = 'method',
+    withKey = 'param',
   }: ModelOption) {
     this._root = root;
     this._fetch = fetch;

@@ -22,11 +22,11 @@ const acting = new Acting({
   domains: {
     admin: ['GET', 'POST'],
     groups: {
-      _self: ['DELETE'],
+      method: ['DELETE'],
       role: ['PUT'],
     },
     users: {
-      _with: {
+      param: {
         books: ['GET'],
       }
     }
@@ -54,8 +54,8 @@ console.log results:
 - `root`: string
 - `domains`: object
 - `fetch`: function
-- `selfKey`: string(defalt: `_self`)
-- `withKey`: string(default: `_with`)
+- `selfKey`: string(defalt: `method`)
+- `withKey`: string(default: `param`)
 
 
 
